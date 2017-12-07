@@ -145,6 +145,30 @@ global proc runOgreExport()
 	float $globScale = `floatField -query -value GlobalScale`;
 	$options += $globScale;
 
+	// --- Mesh version
+	$options += " -version ";
+	int $meshVersion = `optionMenu -query -select MeshVersionMenu`;
+	switch ($meshVersion) {
+		case 1:
+			$options += "latest";
+			break;
+		case 2:
+			$options += "1.10";
+			break;
+		case 3:
+			$options += "1.8";
+			break;
+		case 4:
+			$options += "1.7";
+			break;
+		case 5:
+			$options += "1.4";
+			break;
+		case 6:
+			$options += "1.0";
+			break;
+	}
+
 	// --- Mesh export
 	int $exportMesh = `checkBox -query -value ExportMesh`;
 	if ($exportMesh)
@@ -1097,6 +1121,25 @@ global proc defineOgreExporterUIView()
 						-width 50
 						-value 1
 					GlobalScale;
+
+					// Mesh export version
+
+					text -label "Mesh data version:"
+					     -parent GeneralOptionsLayout;
+
+					optionMenu -parent GeneralOptionsLayout
+					     	   -changeCommand "formatOgreExporterUI"
+					     	   -w 200
+					MeshVersionMenu;
+
+						menuItem -label "Latest version (1.10)";
+						menuItem -label "Mesh version 1.10";
+						menuItem -label "Mesh version 1.8";
+						menuItem -label "Mesh version 1.7";
+						menuItem -label "Mesh version 1.4";
+						menuItem -label "Mesh version 1.0";
+
+					optionMenu -edit -select 1 MeshVersionMenu;
 
 		
 		// --- Export Frame

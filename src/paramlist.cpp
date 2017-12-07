@@ -50,8 +50,9 @@
 //! \author     Francesco Giordana <fra.giordana@tiscali.it>
 //! \author     Marcel Reinhard <marcel.reinhardt@filmakademie.de>
 //! \author     Volker Helzle <marcel.reinhardt@filmakademie.de>
-//! \version    1.0
-//! \date       21.10.2010 (last updated)
+//! \author		Bart Pelle <bart@bitgate.com>
+//! \version    1.1
+//! \date       7.12.2017 (last updated)
 //!
 
 #include "paramlist.h"
@@ -463,8 +464,48 @@ namespace OgreMayaExporter
 					std::cout << "-----------------\n";
 					std::cout.flush();
 				}
+				else if (MString("-version") == args.asString(i, &stat) && (MS::kSuccess == stat))
+				{
+					MString versionName = args.asString(++i, &stat);
+
+					if (versionName == "latest") 
+					{
+						targetMeshVersion = Ogre::MESH_VERSION_LATEST;
+					} 
+					else if (versionName == "1.10") 
+					{
+						targetMeshVersion = Ogre::MESH_VERSION_1_10;
+					}
+					else if (versionName == "1.8") 
+					{
+						targetMeshVersion = Ogre::MESH_VERSION_1_8;
+					}
+					else if (versionName == "1.7")
+					{
+						targetMeshVersion = Ogre::MESH_VERSION_1_7;
+					}
+					else if (versionName == "1.4")
+					{
+						targetMeshVersion = Ogre::MESH_VERSION_1_4;
+					}
+					else if (versionName == "1.0")
+					{
+						targetMeshVersion = Ogre::MESH_VERSION_1_0;
+					}
+					else
+					{
+						std::cout << "Warning: unknown mesh export version \"" << versionName.asChar() << "\", defaulting to latest. Available versions:\n";
+						std::cout << "    latest: Mesh version 1.10 (always resolves to latest available version)\n";
+						std::cout << "    1.10: Mesh version 1.10 (internally 1.100)\n";
+						std::cout << "    1.8: Mesh version 1.8 (internally 1.8)\n";
+						std::cout << "    1.7: Mesh version 1.7 (internally 1.41)\n";
+						std::cout << "    1.4: Mesh version 1.4 (internally 1.40)\n";
+						std::cout << "    1.0: Mesh version 1.0 (internally 1.30)\n";
+						std::cout.flush();
+					}
+				}
 				//warn of duplicate clip name
-				else
+				else 
 				{
 					std::cout << "Warning! A vertex animation clip with name \"" << clipName.asChar() << "\" already exists\n";
 					std::cout.flush();

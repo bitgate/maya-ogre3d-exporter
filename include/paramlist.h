@@ -105,6 +105,8 @@ namespace OgreMayaExporter
 			buildTangents, preventZeroTangent, buildEdges, skelBB, bsBB, vertBB, 
 			tangentsSplitMirrored, tangentsSplitRotated, tangentsUseParity;			
 
+		Ogre::MeshVersion targetMeshVersion;
+
 		float lum;		// Length Unit Multiplier
 		float uvScale;	// UV scale factor to prevent zero tangents
 
@@ -133,6 +135,7 @@ namespace OgreMayaExporter
 		ParamList()	{
 			lum = 1.0;
 			exportMesh = false;
+			targetMeshVersion = Ogre::MESH_VERSION_LATEST; // Target latest version by default
 			exportMaterial = false;
 			exportSkeleton = false;
 			exportSkelAnims = false;
@@ -190,6 +193,7 @@ namespace OgreMayaExporter
 		{
 			int i;
 			lum = source.lum;
+			targetMeshVersion = source.targetMeshVersion;
 			exportMesh = source.exportMesh;
 			exportMaterial = source.exportMaterial;
 			exportSkeleton = source.exportSkeleton;
