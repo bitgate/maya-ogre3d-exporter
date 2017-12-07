@@ -761,7 +761,7 @@ global proc defineOgreExporterUIView()
 		windowPref -remove OgreExportWindow ;
 		
 	window 
-	-title "Ogre Exporter (revision )"
+	-title "Ogre Exporter (Maya 2018, 1.0.0-github)"
 	-topEdge 50
 	-leftEdge 20	
 	-width $windowWidth
@@ -1166,11 +1166,11 @@ global proc defineOgreExporterUIView()
 					
 				button
 					-parent ExportButtonLayout 
-					-label "EXPORT!" 						
+					-label "Export" 						
 					-command "runOgreExport"
 					-width 300
 					-height 30						
-					-backgroundColor 0.80 0 0 
+					-backgroundColor 0.96 0.74 0.32 
 				ButtonExport;
 				
 				text  
@@ -1518,7 +1518,7 @@ global proc defineOgreExporterUIView()
 						checkBox
 							-parent MaterialLayout
 							-value false
-							-label "Export with \"ligthing off\" option"
+							-label "Export with \"lighting off\" option"
 						MatLightingOff;
 		
 				// --- Skeleton
@@ -4011,7 +4011,7 @@ global proc showAbout()
 		-sizeable false
 	aboutWindow;
 	columnLayout;
-	text -label  "\n\ MAYA OGRE EXPORTER revision ";
+	text -label  "\n\ MAYA OGRE EXPORTER 1.0.0-github ";
 	text -label  "\n\
  Description:\n\
  This is a plugin for Maya\, that allows the export of animated meshes in the \n\
