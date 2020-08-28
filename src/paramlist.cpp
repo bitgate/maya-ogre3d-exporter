@@ -13,7 +13,7 @@
 -              	The export command can be run via script too, for instructions              -
 -              	on its usage please refer to the Instructions.txt file.  					-
 - Note: 		The particles exporter is an extra module submitted by the OGRE         	-
-- 				community, it still has to be reviewed and fixed.  		            		-		
+- 				community, it still has to be reviewed and fixed.  		            		-
 ---------------------------------------------------------------------------------------------
 - Original version by Francesco Giordana, sponsored by Anygma N.V. (http://www.nazooka.com) -
 - The previous version was maintained by Filmakademie Baden-Wuerttemberg, 					-
@@ -23,10 +23,10 @@
 - maintained by Bitgate, Inc. for the purpose of keeping Ogre compatible with the latest	-
 - technologies.																				-
 ---------------------------------------------------------------------------------------------
-- Copyright (c) 2011 MFG Baden-Württemberg, Innovation Agency for IT and media.             -
+- Copyright (c) 2011 MFG Baden-WÃ¼rttemberg, Innovation Agency for IT and media.             -
 - Research and Development at the Institute of Animation is a cooperation between           -
-- MFG Baden-Württemberg, Innovation Agency for IT and media and                             -
-- Filmakademie Baden-Württemberg as part of the "MFG Visual Experience Lab".                -
+- MFG Baden-WÃ¼rttemberg, Innovation Agency for IT and media and                             -
+- Filmakademie Baden-WÃ¼rttemberg as part of the "MFG Visual Experience Lab".                -
 ---------------------------------------------------------------------------------------------
 - This program is free software; you can redistribute it and/or modify it under				-
 - the terms of the GNU Lesser General Public License as published by the Free Software		-
@@ -302,17 +302,17 @@ namespace OgreMayaExporter
 					{
 						// rate specified in seconds
 						rate = args.asDouble(++i,&stat);
-					}					
+					}
 					//add clip info
 					clipInfo clip;
 					clip.name = clipName;
 					clip.start = startTime;
 					clip.stop = stopTime;
-					clip.rate = rate;					
+					clip.rate = rate;
 					skelClipList.push_back(clip);
 					std::cout << "skeleton clip " << clipName.asChar() << "\n";
 					std::cout << "start: " << startTime << ", stop: " << stopTime << "\n";
-					std::cout << "rate: " << rate << "\n";					
+					std::cout << "rate: " << rate << "\n";
 					std::cout << "-----------------\n";
 					std::cout.flush();
 				}
@@ -464,50 +464,50 @@ namespace OgreMayaExporter
 					std::cout << "-----------------\n";
 					std::cout.flush();
 				}
-				else if (MString("-version") == args.asString(i, &stat) && (MS::kSuccess == stat))
-				{
-					MString versionName = args.asString(++i, &stat);
-
-					if (versionName == "latest") 
-					{
-						targetMeshVersion = Ogre::MESH_VERSION_LATEST;
-					} 
-					else if (versionName == "1.10") 
-					{
-						targetMeshVersion = Ogre::MESH_VERSION_1_10;
-					}
-					else if (versionName == "1.8") 
-					{
-						targetMeshVersion = Ogre::MESH_VERSION_1_8;
-					}
-					else if (versionName == "1.7")
-					{
-						targetMeshVersion = Ogre::MESH_VERSION_1_7;
-					}
-					else if (versionName == "1.4")
-					{
-						targetMeshVersion = Ogre::MESH_VERSION_1_4;
-					}
-					else if (versionName == "1.0")
-					{
-						targetMeshVersion = Ogre::MESH_VERSION_1_0;
-					}
-					else
-					{
-						std::cout << "Warning: unknown mesh export version \"" << versionName.asChar() << "\", defaulting to latest. Available versions:\n";
-						std::cout << "    latest: Mesh version 1.10 (always resolves to latest available version)\n";
-						std::cout << "    1.10: Mesh version 1.10 (internally 1.100)\n";
-						std::cout << "    1.8: Mesh version 1.8 (internally 1.8)\n";
-						std::cout << "    1.7: Mesh version 1.7 (internally 1.41)\n";
-						std::cout << "    1.4: Mesh version 1.4 (internally 1.40)\n";
-						std::cout << "    1.0: Mesh version 1.0 (internally 1.30)\n";
-						std::cout.flush();
-					}
-				}
 				//warn of duplicate clip name
-				else 
+				else
 				{
 					std::cout << "Warning! A vertex animation clip with name \"" << clipName.asChar() << "\" already exists\n";
+					std::cout.flush();
+				}
+			}
+			else if (MString("-version") == args.asString(i, &stat) && (MS::kSuccess == stat))
+			{
+				MString versionName = args.asString(++i, &stat);
+
+				if (versionName == "latest")
+				{
+					targetMeshVersion = Ogre::MESH_VERSION_LATEST;
+				}
+				else if (versionName == "1.10")
+				{
+					targetMeshVersion = Ogre::MESH_VERSION_1_10;
+				}
+				else if (versionName == "1.8")
+				{
+					targetMeshVersion = Ogre::MESH_VERSION_1_8;
+				}
+				else if (versionName == "1.7")
+				{
+					targetMeshVersion = Ogre::MESH_VERSION_1_7;
+				}
+				else if (versionName == "1.4")
+				{
+					targetMeshVersion = Ogre::MESH_VERSION_1_4;
+				}
+				else if (versionName == "1.0")
+				{
+					targetMeshVersion = Ogre::MESH_VERSION_1_0;
+				}
+				else
+				{
+					std::cout << "Warning: unknown mesh export version \"" << versionName.asChar() << "\", defaulting to latest. Available versions:\n";
+					std::cout << "    latest: Mesh version 1.10 (always resolves to latest available version)\n";
+					std::cout << "    1.10: Mesh version 1.10 (internally 1.100)\n";
+					std::cout << "    1.8: Mesh version 1.8 (internally 1.8)\n";
+					std::cout << "    1.7: Mesh version 1.7 (internally 1.41)\n";
+					std::cout << "    1.4: Mesh version 1.4 (internally 1.40)\n";
+					std::cout << "    1.0: Mesh version 1.0 (internally 1.30)\n";
 					std::cout.flush();
 				}
 			}
@@ -583,16 +583,16 @@ namespace OgreMayaExporter
 	{
 		if (exportMaterial)
 			outMaterial.close();
-	
+
 		if (exportAnimCurves)
 			outAnim.close();
-			
+
 		if (exportCameras)
 			outCameras.close();
 
 		if (exportAnimCurvesXML)
 			outAnimXML.close();
-			
+
 		if (exportCamerasAnimXML)
 			outCamerasXML.close();
 
