@@ -73,6 +73,10 @@ namespace OgreMayaExporter
 		m_pMesh = 0;
 		delete m_pMaterialSet;
 		m_pMaterialSet = 0;
+		delete mr;
+		mr = 0;
+		delete bufferManager;
+		bufferManager = 0;
 		// Close output files
 		m_params.closeFiles();
 		std::cout.flush();
@@ -994,17 +998,6 @@ namespace OgreMayaExporter
 	********************************************************************************************************/
 	MStatus OgreExporter::writeOgreData()
 	{
-		// Create singletons		
-		Ogre::LogManager logMgr;
-		Ogre::ResourceGroupManager rgm;
-		Ogre::MeshManager meshMgr;
-		Ogre::SkeletonManager skelMgr;
-		Ogre::MaterialManager matMgr;
-		Ogre::DefaultHardwareBufferManager hardwareBufMgr;
-		Ogre::LodStrategyManager lodMgr;
-		
-		// Create a log
-		logMgr.createLog("ogreMayaExporter.log", true);
 		// Write mesh binary
 		if (m_params.exportMesh)
 		{

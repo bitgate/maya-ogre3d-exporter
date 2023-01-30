@@ -112,6 +112,7 @@ namespace OgreMayaExporter
 		float _lastStop_cam;
 		float _firstStart_cam;
 		Ogre::Root *mr;
+		Ogre::DefaultHardwareBufferManager* bufferManager;
 	};
 
 
@@ -125,13 +126,13 @@ namespace OgreMayaExporter
 		:m_pMesh(0), m_pMaterialSet(0)
 	{
 		MGlobal::displayInfo("Translating scene to OGRE format");		
-		//mr = new Ogre::Root();
+		mr = new Ogre::Root("", "", "ogreMayaExporter.log");
+		bufferManager = new Ogre::DefaultHardwareBufferManager; // needed because we don't have a rendersystem
 	}
 
 	// Routine for creating the plug-in
 	inline void* OgreExporter::creator()
 	{
-		//Ogre::Root *r = new Ogre::Root();
 		return new OgreExporter();
 	}
 

@@ -385,6 +385,7 @@ namespace OgreMayaExporter
 	// Write submesh data to an Ogre compatible mesh
 	MStatus Submesh::createOgreSubmesh(Ogre::MeshPtr pMesh,const ParamList& params)
 	{
+		Ogre::MaterialManager* matMgr = Ogre::MaterialManager::getSingletonPtr();
 		MStatus stat;
 		// Create a new submesh
 		Ogre::SubMesh* pSubmesh;
@@ -392,8 +393,15 @@ namespace OgreMayaExporter
 			pSubmesh = pMesh->createSubMesh(m_name.asChar());
 		else
 			pSubmesh = pMesh->createSubMesh();
+        const Ogre::String materialName = m_pMaterial->name().asChar();
+        Ogre::MaterialPtr pMat = matMgr->getByName(materialName);
+        if (!pMat)
+        {
+            // Load a dummy material if necessary so it can be referenced in export.
+            pMat = matMgr->create(materialName, pMesh->getGroup());
+        }
 		// Set material
-        pSubmesh->setMaterialName(m_pMaterial->name().asChar());
+		pSubmesh->setMaterialName(materialName);
         // Set use shared geometry flag
 		pSubmesh->useSharedVertices = params.useSharedGeom;
 		// Create vertex data for current submesh
