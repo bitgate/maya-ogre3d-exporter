@@ -23,10 +23,10 @@
 - maintained by Bitgate, Inc. for the purpose of keeping Ogre compatible with the latest	-
 - technologies.																				-
 ---------------------------------------------------------------------------------------------
-- Copyright (c) 2011 MFG Baden-Württemberg, Innovation Agency for IT and media.             -
+- Copyright (c) 2011 MFG Baden-Wï¿½rttemberg, Innovation Agency for IT and media.             -
 - Research and Development at the Institute of Animation is a cooperation between           -
-- MFG Baden-Württemberg, Innovation Agency for IT and media and                             -
-- Filmakademie Baden-Württemberg as part of the "MFG Visual Experience Lab".                -
+- MFG Baden-Wï¿½rttemberg, Innovation Agency for IT and media and                             -
+- Filmakademie Baden-Wï¿½rttemberg as part of the "MFG Visual Experience Lab".                -
 ---------------------------------------------------------------------------------------------
 - This program is free software; you can redistribute it and/or modify it under				-
 - the terms of the GNU Lesser General Public License as published by the Free Software		-
@@ -118,10 +118,14 @@ namespace OgreMayaExporter
 		plug.connectedTo(srcplugarray,true,false,&stat);
 		for (int i=0; i<srcplugarray.length() && !foundShader; i++)
 		{
-			if (srcplugarray[i].node().hasFn(MFn::kLambert) || srcplugarray[i].node().hasFn(MFn::kSurfaceShader) || 
-				srcplugarray[i].node().hasFn(MFn::kPluginHwShaderNode) )
+			MObject object = srcplugarray[i].node();
+			MFnDependencyNode node(object);
+			if (object.hasFn(MFn::kLambert) 
+			|| object.hasFn(MFn::kSurfaceShader) 
+			|| object.hasFn(MFn::kPluginHwShaderNode) 
+			|| node.typeName(&stat) == "aiStandardSurface")
 			{
-				pShader = new MFnDependencyNode(srcplugarray[i].node());
+				pShader = new MFnDependencyNode(object);
 				foundShader = true;
 			}
 		}
