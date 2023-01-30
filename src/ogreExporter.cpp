@@ -371,8 +371,8 @@ namespace OgreMayaExporter
 		m_params.outAnim << "anim " << outString.asChar() << "\n";
 		m_params.outAnim <<"{\n";
 		m_params.outAnim << "\t//Time   /    Value\n";
-		float animStart = anim.time(0).as(MTime::kSeconds);
-		float animStop = anim.time(anim.numKeys()-1).as(MTime::kSeconds);
+		double animStart = anim.time(0).as(MTime::kSeconds);
+		double animStop = anim.time(anim.numKeys()-1).as(MTime::kSeconds);
 		
 		m_params.outAnimXML << "\t<animation name=\"" << outString.asChar() << "\" type=\"float\" start=\"" <<  animStart << "\" end=\"" << animStop << "\">\n" ;
 		for (uint i=0; i<anim.numKeys(); i++) {
@@ -394,14 +394,14 @@ namespace OgreMayaExporter
 			m_params.outAnim << "anim FOVy" << "\n";
 			m_params.outAnim <<"{\n";
 			m_params.outAnim << "\t//Time   /    Value\n";
-			std::map<float,float>::iterator av_it;
+			std::map<double, double>::iterator av_it;
 			if(anim.numKeys()>_vA_map.size()) {			
 						// TODO
 				}				
 			else {
 				for(av_it=_vA_map.begin();av_it!=_vA_map.end();av_it++) {			
-					float last_key = 0.0;
-					float take_this_key = -1.0;
+					double last_key = 0.0;
+					double take_this_key = -1.0;
 					for(uint i=0; i<anim.numKeys(); i++) {
 						if(abs(anim.time(i).as(MTime::kSeconds) - av_it->first)<0.0001) {
 							take_this_key = anim.value(i);
@@ -411,13 +411,13 @@ namespace OgreMayaExporter
 							last_key = anim.value(i);
 						}
 					}
-					float vA_val = av_it->second;
-					float focalLength = -1. ; 
+					double vA_val = av_it->second;
+					double focalLength = -1. ;
 					if(take_this_key > -1.1) 
 						focalLength = take_this_key;
 					else
 						focalLength = last_key;
-					float FOVy = 2*atan(vA_val*25.4/(2*focalLength)) * 180 / 3.141592654; 
+					double FOVy = 2*atan(vA_val*25.4/(2*focalLength)) * 180 / 3.141592654;
 					m_params.outAnim << "\t" << av_it->first << "\t" << FOVy << "\n";
 				}
 			}
@@ -444,8 +444,8 @@ namespace OgreMayaExporter
 		MFnAnimCurve* animCurve_z = NULL;
 		_firstStart_cam = 1e12;
 		_lastStop_cam = -1.;
-		float firstStart_cam_local = 1e12;
-		float lastStop_cam_local = -1.;
+		double firstStart_cam_local = 1e12;
+		double lastStop_cam_local = -1.;
 		std::stringbuf sbuf;
 		std::iostream outCamerasXML_tmp(&sbuf);
 		std::map<MTime, double* > keyMap;
@@ -493,8 +493,8 @@ namespace OgreMayaExporter
 					return MS::kFailure;
 				}
 			}
-			float animStart = animCurve_x->time(0).as(MTime::kSeconds);
-			float animStop = animCurve_x->time(animCurve_x->numKeys()-1).as(MTime::kSeconds);		
+			double animStart = animCurve_x->time(0).as(MTime::kSeconds);
+			double animStop = animCurve_x->time(animCurve_x->numKeys()-1).as(MTime::kSeconds);
 			if(animStart<_firstStart_cam)
 				_firstStart_cam = animStart;
 			if(animStop>_lastStop_cam)
@@ -544,8 +544,8 @@ namespace OgreMayaExporter
 					return MS::kFailure;
 				}
 			}
-			float animStart = animCurve_y->time(0).as(MTime::kSeconds);
-			float animStop = animCurve_y->time(animCurve_y->numKeys()-1).as(MTime::kSeconds);		
+			double animStart = animCurve_y->time(0).as(MTime::kSeconds);
+			double animStop = animCurve_y->time(animCurve_y->numKeys()-1).as(MTime::kSeconds);
 			if(animStart<_firstStart_cam)
 				_firstStart_cam = animStart;
 			if(animStop>_lastStop_cam)
@@ -610,8 +610,8 @@ namespace OgreMayaExporter
 					return MS::kFailure;
 				}
 			}
-			float animStart = animCurve_z->time(0).as(MTime::kSeconds);
-			float animStop = animCurve_z->time(animCurve_z->numKeys()-1).as(MTime::kSeconds);	
+			double animStart = animCurve_z->time(0).as(MTime::kSeconds);
+			double animStop = animCurve_z->time(animCurve_z->numKeys()-1).as(MTime::kSeconds);
 			if(animStart<_firstStart_cam)
 				_firstStart_cam = animStart;
 			if(animStop>_lastStop_cam)
@@ -694,8 +694,8 @@ namespace OgreMayaExporter
 					return MS::kFailure;
 				}
 			}
-			float animStart = animCurve_x->time(0).as(MTime::kSeconds);
-			float animStop = animCurve_x->time(animCurve_x->numKeys()-1).as(MTime::kSeconds);		
+			double animStart = animCurve_x->time(0).as(MTime::kSeconds);
+			double animStop = animCurve_x->time(animCurve_x->numKeys()-1).as(MTime::kSeconds);
 			if(animStart<_firstStart_cam)
 				_firstStart_cam = animStart;
 			if(animStop>_lastStop_cam)
@@ -744,8 +744,8 @@ namespace OgreMayaExporter
 					return MS::kFailure;
 				}
 			}
-			float animStart = animCurve_y->time(0).as(MTime::kSeconds);
-			float animStop = animCurve_y->time(animCurve_y->numKeys()-1).as(MTime::kSeconds);		
+			double animStart = animCurve_y->time(0).as(MTime::kSeconds);
+			double animStop = animCurve_y->time(animCurve_y->numKeys()-1).as(MTime::kSeconds);
 			if(animStart<_firstStart_cam)
 				_firstStart_cam = animStart;
 			if(animStop>_lastStop_cam)
@@ -810,8 +810,8 @@ namespace OgreMayaExporter
 					return MS::kFailure;
 				}
 			}
-			float animStart = animCurve_z->time(0).as(MTime::kSeconds);
-			float animStop = animCurve_z->time(animCurve_z->numKeys()-1).as(MTime::kSeconds);	
+			double animStart = animCurve_z->time(0).as(MTime::kSeconds);
+			double animStop = animCurve_z->time(animCurve_z->numKeys()-1).as(MTime::kSeconds);
 			if(animStart<_firstStart_cam)
 				_firstStart_cam = animStart;
 			if(animStop>_lastStop_cam)
@@ -890,8 +890,8 @@ namespace OgreMayaExporter
 					return MS::kFailure;
 				}
 			}
-			float animStart = animCurve->time(0).as(MTime::kSeconds);
-			float animStop = animCurve->time(animCurve->numKeys()-1).as(MTime::kSeconds);
+			double animStart = animCurve->time(0).as(MTime::kSeconds);
+			double animStop = animCurve->time(animCurve->numKeys()-1).as(MTime::kSeconds);
 			if(animStart<_firstStart_cam)
 				_firstStart_cam = animStart;
 			if(animStop>_lastStop_cam)
@@ -924,7 +924,7 @@ namespace OgreMayaExporter
 						return MS::kFailure;
 					}
 				}
-				std::map<float,float>::iterator av_it;
+				std::map<double, double>::iterator av_it;
 				m_params.outCameras << "anim FOVy\n";
 				m_params.outCameras <<"\t\t\t{\n";
 				m_params.outCameras << "\t\t\t//Time   /    Value\n";
@@ -934,8 +934,8 @@ namespace OgreMayaExporter
 					}				
 				else {
 					for(av_it=_vA_map.begin();av_it!=_vA_map.end();av_it++) {			
-						float last_key = 0.0;
-						float take_this_key = -1.0;
+						double last_key = 0.0;
+						double take_this_key = -1.0;
 						for(uint i=0; i<animCurve->numKeys(); i++) {
 							if(abs(animCurve->time(i).as(MTime::kSeconds) - av_it->first)<0.0001) {
 								take_this_key = animCurve->value(i);
@@ -945,13 +945,13 @@ namespace OgreMayaExporter
 								last_key = animCurve->value(i);
 							}
 						}
-						float vA_val = av_it->second;
-						float focalLength = -1. ; 
+						double vA_val = av_it->second;
+						double focalLength = -1. ;
 						if(take_this_key > -1.1) 
 							focalLength = take_this_key;
 						else
 							focalLength = last_key;
-						float FOVy = 2*atan(vA_val*25.4/(2*focalLength)) * 180 / 3.141592654; 
+						double FOVy = 2*atan(vA_val*25.4/(2*focalLength)) * 180 / 3.141592654;
 						outCamerasXML_tmp << "\t\t<keyframe time=\"" << av_it->first << "\" value=\"" << FOVy << "\"/>\n";
 					}				
 				}

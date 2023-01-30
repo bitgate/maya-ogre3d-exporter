@@ -153,9 +153,9 @@ namespace OgreMayaExporter
 				// Get layered texture node
 				MFnDependencyNode* pLayeredTexNode = NULL;
 				if (m_type == MT_SURFACE_SHADER)
-					pShader->findPlug("outColor").connectedTo(colorSrcPlugs,true,false);
+					pShader->findPlug("outColor", true, &stat).connectedTo(colorSrcPlugs,true,false);
 				else
-					pShader->findPlug("color").connectedTo(colorSrcPlugs,true,false);
+					pShader->findPlug("color", true, &stat).connectedTo(colorSrcPlugs,true,false);
 				for (int i=0; i<colorSrcPlugs.length(); i++)
 				{
 					if (colorSrcPlugs[i].node().hasFn(MFn::kLayeredTexture))
@@ -166,10 +166,16 @@ namespace OgreMayaExporter
 				}
 
 				// Get inputs to layered texture
-				MPlug inputsPlug = pLayeredTexNode->findPlug("inputs");
+				int numInputs = 0;
+				MPlug inputsPlug;
+				if (pLayeredTexNode)
+				{
+					inputsPlug = pLayeredTexNode->findPlug("inputs", true);
+					numInputs = inputsPlug.numElements();
+				}
 
 				// Scan inputs and export textures
-				for (int i=inputsPlug.numElements()-1; i>=0; i--)
+				for (int i= numInputs - 1; i>=0; i--)
 				{
 					MFnDependencyNode* pTextureNode = NULL;
 					// Search for a connected texture
@@ -228,9 +234,9 @@ namespace OgreMayaExporter
 				// Get texture node
 				MFnDependencyNode* pTextureNode = NULL;
 				if (m_type == MT_SURFACE_SHADER)
-					pShader->findPlug("outColor").connectedTo(colorSrcPlugs,true,false);
+					pShader->findPlug("outColor", true).connectedTo(colorSrcPlugs,true,false);
 				else
-					pShader->findPlug("color").connectedTo(colorSrcPlugs,true,false);
+					pShader->findPlug("color", true).connectedTo(colorSrcPlugs,true,false);
 				for (int i=0; i<colorSrcPlugs.length(); i++)
 				{
 					if (colorSrcPlugs[i].node().hasFn(MFn::kFileTexture))
@@ -264,7 +270,7 @@ namespace OgreMayaExporter
 		m_type = MT_SURFACE_SHADER;
 		MPlugArray colorSrcPlugs;
 		// Check if material is textured
-		pShader->findPlug("outColor").connectedTo(colorSrcPlugs,true,false);
+		pShader->findPlug("outColor", true).connectedTo(colorSrcPlugs,true,false);
 		for (int i=0; i<colorSrcPlugs.length(); i++)
 		{
 			if (colorSrcPlugs[i].node().hasFn(MFn::kFileTexture))
@@ -282,8 +288,8 @@ namespace OgreMayaExporter
 
 		// Check if material is transparent
 		float trasp;
-		pShader->findPlug("outTransparencyR").getValue(trasp);
-		if (pShader->findPlug("outTransparency").isConnected() || trasp>0.0f)
+		pShader->findPlug("outTransparencyR", true).getValue(trasp);
+		if (pShader->findPlug("outTransparency", true).isConnected() || trasp>0.0f)
 			m_isTransparent = true;
 
 		// Get material colours
@@ -291,12 +297,12 @@ namespace OgreMayaExporter
 			m_diffuse = MColor(1.0,1.0,1.0,1.0);
 		else
 		{
-			pShader->findPlug("outColorR").getValue(m_diffuse.r);
-			pShader->findPlug("outColorG").getValue(m_diffuse.g);
-			pShader->findPlug("outColorB").getValue(m_diffuse.b);
+			pShader->findPlug("outColorR", true).getValue(m_diffuse.r);
+			pShader->findPlug("outColorG", true).getValue(m_diffuse.g);
+			pShader->findPlug("outColorB", true).getValue(m_diffuse.b);
 			float trasp;
-			pShader->findPlug("outTransparencyR").getValue(trasp);
-			m_diffuse.a = 1.0 - trasp;
+			pShader->findPlug("outTransparencyR", true).getValue(trasp);
+			m_diffuse.a = 1.0f - trasp;
 		}
 		m_ambient = MColor(0,0,0,1);
 		m_emissive = MColor(0,0,0,1);
@@ -311,7 +317,7 @@ namespace OgreMayaExporter
 		m_type = MT_LAMBERT;
 		MFnLambertShader* pLambert = new MFnLambertShader(pShader->object());
 		// Check if material is textured
-		pLambert->findPlug("color").connectedTo(colorSrcPlugs,true,false);
+		pLambert->findPlug("color", true).connectedTo(colorSrcPlugs,true,false);
 		for (int i=0; i<colorSrcPlugs.length(); i++)
 		{
 			if (colorSrcPlugs[i].node().hasFn(MFn::kFileTexture))
@@ -328,7 +334,7 @@ namespace OgreMayaExporter
 		}
 
 		// Check if material is transparent
-		if (pLambert->findPlug("transparency").isConnected() || pLambert->transparency().r>0.0f)
+		if (pLambert->findPlug("transparency", true).isConnected() || pLambert->transparency().r>0.0f)
 			m_isTransparent = true;
 
 		// Get material colours
@@ -338,7 +344,7 @@ namespace OgreMayaExporter
 		else
 		{
 			m_diffuse = pLambert->color();
-			m_diffuse.a = 1.0 - pLambert->transparency().r;
+			m_diffuse.a = 1.0f - pLambert->transparency().r;
 		}
 		//ambient colour
 		m_ambient = pLambert->ambientColor();
@@ -357,7 +363,7 @@ namespace OgreMayaExporter
 		m_type = MT_PHONG;
 		MFnPhongShader* pPhong = new MFnPhongShader(pShader->object());
 		// Check if material is textured
-		pPhong->findPlug("color").connectedTo(colorSrcPlugs,true,false);
+		pPhong->findPlug("color", &stat).connectedTo(colorSrcPlugs,true,false);
 		for (int i=0; i<colorSrcPlugs.length(); i++)
 		{
 			if (colorSrcPlugs[i].node().hasFn(MFn::kFileTexture))
@@ -374,7 +380,7 @@ namespace OgreMayaExporter
 		}
 
 		// Check if material is transparent
-		if (pPhong->findPlug("transparency").isConnected() || pPhong->transparency().r>0.0f)
+		if (pPhong->findPlug("transparency", &stat).isConnected() || pPhong->transparency().r>0.0f)
 			m_isTransparent = true;
 
 		// Get material colours
@@ -384,7 +390,7 @@ namespace OgreMayaExporter
 		else
 		{
 			m_diffuse = pPhong->color();
-			m_diffuse.a = 1.0 - pPhong->transparency().r;
+			m_diffuse.a = 1.0f - pPhong->transparency().r;
 		}
 		//ambient colour
 		m_ambient = pPhong->ambientColor();
@@ -392,7 +398,7 @@ namespace OgreMayaExporter
 		m_emissive = pPhong->incandescence();
 		//specular colour
 		m_specular = pPhong->specularColor();
-		m_specular.a = pPhong->cosPower()*1.28;
+		m_specular.a = pPhong->cosPower()*1.28f;
 		delete pPhong;
 		return MS::kSuccess;
 	}
@@ -404,7 +410,7 @@ namespace OgreMayaExporter
 		m_type = MT_BLINN;
 		MFnBlinnShader* pBlinn = new MFnBlinnShader(pShader->object());
 		// Check if material is textured
-		pBlinn->findPlug("color").connectedTo(colorSrcPlugs,true,false);
+		pBlinn->findPlug("color", &stat).connectedTo(colorSrcPlugs,true,false);
 		for (int i=0; i<colorSrcPlugs.length(); i++)
 		{
 			if (colorSrcPlugs[i].node().hasFn(MFn::kFileTexture))
@@ -421,7 +427,7 @@ namespace OgreMayaExporter
 		}
 
 		// Check if material is transparent
-		if (pBlinn->findPlug("transparency").isConnected() || pBlinn->transparency().r>0.0f)
+		if (pBlinn->findPlug("transparency", &stat).isConnected() || pBlinn->transparency().r>0.0f)
 			m_isTransparent = true;
 
 		// Get material colours
@@ -431,7 +437,7 @@ namespace OgreMayaExporter
 		else
 		{
 			m_diffuse = pBlinn->color();
-			m_diffuse.a = 1.0 - pBlinn->transparency().r;
+			m_diffuse.a = 1.0f - pBlinn->transparency().r;
 		}
 		//ambient colour
 		m_ambient = pBlinn->ambientColor();
@@ -439,7 +445,7 @@ namespace OgreMayaExporter
 		m_emissive = pBlinn->incandescence();
 		//specular colour
 		m_specular = pBlinn->specularColor();
-		m_specular.a = 128.0-(128.0*pBlinn->eccentricity());
+		m_specular.a = 128.0f-(128.0f*pBlinn->eccentricity());
 		delete pBlinn;
 		return MS::kSuccess;
 	}
@@ -478,7 +484,7 @@ namespace OgreMayaExporter
 		tex.opType = opType;
 		// Get connections to uvCoord attribute of texture node
 		MPlugArray texSrcPlugs;
-		pTexNode->findPlug("uvCoord").connectedTo(texSrcPlugs,true,false);
+		pTexNode->findPlug("uvCoord", &stat).connectedTo(texSrcPlugs,true,false);
 		// Get place2dtexture node (if connected)
 		MFnDependencyNode* pPlace2dTexNode = NULL;
 		for (int j=0; j<texSrcPlugs.length(); j++)
@@ -494,7 +500,7 @@ namespace OgreMayaExporter
 		if (pPlace2dTexNode)
 		{
 			MPlugArray placetexSrcPlugs;
-			pPlace2dTexNode->findPlug("uvCoord").connectedTo(placetexSrcPlugs,true,false);
+			pPlace2dTexNode->findPlug("uvCoord", &stat).connectedTo(placetexSrcPlugs,true,false);
 			for (int j=0; j<placetexSrcPlugs.length(); j++)
 			{
 				if (placetexSrcPlugs[j].node().hasFn(MFn::kUvChooser))
@@ -509,7 +515,7 @@ namespace OgreMayaExporter
 		{
 			bool foundMesh = false;
 			bool foundUvset = false;
-			MPlug uvsetsPlug = pUvChooserNode->findPlug("uvSets");
+			MPlug uvsetsPlug = pUvChooserNode->findPlug("uvSets", &stat);
 			MPlugArray uvsetsSrcPlugs;
 			for (int i=0; i<uvsetsPlug.evaluateNumElements() && !foundMesh; i++)
 			{
@@ -537,8 +543,8 @@ namespace OgreMayaExporter
 			// Get address mode
 			//U
 			bool wrapU, mirrorU;
-			pPlace2dTexNode->findPlug("wrapU").getValue(wrapU);
-			pPlace2dTexNode->findPlug("mirrorU").getValue(mirrorU);
+			pPlace2dTexNode->findPlug("wrapU", &stat).getValue(wrapU);
+			pPlace2dTexNode->findPlug("mirrorU", &stat).getValue(mirrorU);
 			if (mirrorU)
 				tex.am_u = TAM_MIRROR;
 			else if (wrapU)
@@ -547,8 +553,8 @@ namespace OgreMayaExporter
 				tex.am_u = TAM_CLAMP;
 			// V
 			bool wrapV,mirrorV;
-			pPlace2dTexNode->findPlug("wrapV").getValue(wrapV);
-			pPlace2dTexNode->findPlug("mirrorV").getValue(mirrorV);
+			pPlace2dTexNode->findPlug("wrapV", &stat).getValue(wrapV);
+			pPlace2dTexNode->findPlug("mirrorV", &stat).getValue(mirrorV);
 			if (mirrorV)
 				tex.am_v = TAM_MIRROR;
 			else if (wrapV)
@@ -557,8 +563,8 @@ namespace OgreMayaExporter
 				tex.am_v = TAM_CLAMP;
 			// Get texture scale
 			double covU,covV;
-			pPlace2dTexNode->findPlug("coverageU").getValue(covU);
-			pPlace2dTexNode->findPlug("coverageV").getValue(covV);
+			pPlace2dTexNode->findPlug("coverageU", &stat).getValue(covU);
+			pPlace2dTexNode->findPlug("coverageV", &stat).getValue(covV);
 			tex.scale_u = covU;
 			if (fabs(tex.scale_u) < PRECISION)
 				tex.scale_u = 0;
@@ -567,8 +573,8 @@ namespace OgreMayaExporter
 				tex.scale_v = 0;
 			// Get texture scroll
 			double transU,transV;
-			pPlace2dTexNode->findPlug("translateFrameU").getValue(transU);
-			pPlace2dTexNode->findPlug("translateFrameV").getValue(transV);
+			pPlace2dTexNode->findPlug("translateFrameU", &stat).getValue(transU);
+			pPlace2dTexNode->findPlug("translateFrameV", &stat).getValue(transV);
 			tex.scroll_u = -0.5 * (covU-1.0)/covU - transU/covU;
 			if (fabs(tex.scroll_u) < PRECISION)
 				tex.scroll_u = 0;
@@ -577,7 +583,7 @@ namespace OgreMayaExporter
 				tex.scroll_v = 0;
 			// Get texture rotation
 			double rot;
-			pPlace2dTexNode->findPlug("rotateFrame").getValue(rot);
+			pPlace2dTexNode->findPlug("rotateFrame", &stat).getValue(rot);
 			tex.rot = -rot;
 			if (fabs(rot) < PRECISION)
 				tex.rot = 0;

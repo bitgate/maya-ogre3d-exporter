@@ -105,12 +105,12 @@ namespace OgreMayaExporter
 		MSelectionList m_selList;
 		MTime m_curTime;
 
-		std::map<float,float> _vA_map;
-		std::map<float,float> _cam_vA_map;
-		float _lastStop;
-		float _firstStart;
-		float _lastStop_cam;
-		float _firstStart_cam;
+		std::map<double, double> _vA_map;
+		std::map<double, double> _cam_vA_map;
+		double _lastStop;
+		double _firstStart;
+		double _lastStop_cam;
+		double _firstStart_cam;
 		Ogre::Root *mr;
 		Ogre::DefaultHardwareBufferManager* bufferManager;
 	};

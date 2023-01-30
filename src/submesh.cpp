@@ -114,7 +114,7 @@ namespace OgreMayaExporter
 		MFnDependencyNode* pShader;
 		//get shader from shading group
 		MFnDependencyNode shadingGroup(shader);
-		plug = shadingGroup.findPlug("surfaceShader");
+		plug = shadingGroup.findPlug("surfaceShader",true,&stat);
 		plug.connectedTo(srcplugarray,true,false,&stat);
 		for (int i=0; i<srcplugarray.length() && !foundShader; i++)
 		{
@@ -184,7 +184,7 @@ namespace OgreMayaExporter
 		std::cout << "Loading submesh : " << m_name.asChar() << "...";
 		std::cout.flush();
 		//save uvsets info
-		for (int i=m_uvsets.size(); i<texcoordsets.length(); i++)
+		for (size_t i=m_uvsets.size(); i<texcoordsets.length(); i++)
 		{
 			uvset uv;
 			uv.size = 2;
@@ -228,7 +228,7 @@ namespace OgreMayaExporter
 					if (vtx_mapping[idx] == -1)
 					{
 						m_indices.push_back(idx);
-						new_idx = m_indices.size() - 1;
+						new_idx = static_cast<long>(m_indices.size()) - 1;
 						vtx_mapping[idx] = new_idx;
 					}
 					else
@@ -545,15 +545,15 @@ namespace OgreMayaExporter
 				{
 				case Ogre::VES_POSITION:
 					elem.baseVertexPointerToElement(pBase, &pFloat);
-					*pFloat++ = v.x;
-					*pFloat++ = v.y;
-					*pFloat++ = v.z;
+					*pFloat++ = static_cast<float>(v.x);
+					*pFloat++ = static_cast<float>(v.y);
+                    *pFloat++ = static_cast<float>(v.z);
 					break;
 				case Ogre::VES_NORMAL:
 					elem.baseVertexPointerToElement(pBase, &pFloat);
-					*pFloat++ = v.n.x;
-					*pFloat++ = v.n.y;
-					*pFloat++ = v.n.z;
+					*pFloat++ = static_cast<float>(v.n.x);
+					*pFloat++ = static_cast<float>(v.n.y);
+					*pFloat++ = static_cast<float>(v.n.z);
 					break;
 				case Ogre::VES_DIFFUSE:
 					{
