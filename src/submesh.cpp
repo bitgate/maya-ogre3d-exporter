@@ -23,10 +23,10 @@
 - maintained by Bitgate, Inc. for the purpose of keeping Ogre compatible with the latest	-
 - technologies.																				-
 ---------------------------------------------------------------------------------------------
-- Copyright (c) 2011 MFG Baden-Württemberg, Innovation Agency for IT and media.             -
+- Copyright (c) 2011 MFG Baden-Wï¿½rttemberg, Innovation Agency for IT and media.             -
 - Research and Development at the Institute of Animation is a cooperation between           -
-- MFG Baden-Württemberg, Innovation Agency for IT and media and                             -
-- Filmakademie Baden-Württemberg as part of the "MFG Visual Experience Lab".                -
+- MFG Baden-Wï¿½rttemberg, Innovation Agency for IT and media and                             -
+- Filmakademie Baden-Wï¿½rttemberg as part of the "MFG Visual Experience Lab".                -
 ---------------------------------------------------------------------------------------------
 - This program is free software; you can redistribute it and/or modify it under				-
 - the terms of the GNU Lesser General Public License as published by the Free Software		-
@@ -114,14 +114,18 @@ namespace OgreMayaExporter
 		MFnDependencyNode* pShader;
 		//get shader from shading group
 		MFnDependencyNode shadingGroup(shader);
-		plug = shadingGroup.findPlug("surfaceShader");
+		plug = shadingGroup.findPlug("surfaceShader",true,&stat);
 		plug.connectedTo(srcplugarray,true,false,&stat);
 		for (int i=0; i<srcplugarray.length() && !foundShader; i++)
 		{
-			if (srcplugarray[i].node().hasFn(MFn::kLambert) || srcplugarray[i].node().hasFn(MFn::kSurfaceShader) || 
-				srcplugarray[i].node().hasFn(MFn::kPluginHwShaderNode) )
+			MObject object = srcplugarray[i].node();
+			MFnDependencyNode node(object);
+			if (object.hasFn(MFn::kLambert) 
+			|| object.hasFn(MFn::kSurfaceShader) 
+			|| object.hasFn(MFn::kPluginHwShaderNode) 
+			|| node.typeName(&stat) == "aiStandardSurface")
 			{
-				pShader = new MFnDependencyNode(srcplugarray[i].node());
+				pShader = new MFnDependencyNode(object);
 				foundShader = true;
 			}
 		}
@@ -180,7 +184,7 @@ namespace OgreMayaExporter
 		std::cout << "Loading submesh : " << m_name.asChar() << "...";
 		std::cout.flush();
 		//save uvsets info
-		for (int i=m_uvsets.size(); i<texcoordsets.length(); i++)
+		for (size_t i=m_uvsets.size(); i<texcoordsets.length(); i++)
 		{
 			uvset uv;
 			uv.size = 2;
@@ -224,7 +228,7 @@ namespace OgreMayaExporter
 					if (vtx_mapping[idx] == -1)
 					{
 						m_indices.push_back(idx);
-						new_idx = m_indices.size() - 1;
+						new_idx = static_cast<long>(m_indices.size()) - 1;
 						vtx_mapping[idx] = new_idx;
 					}
 					else
@@ -385,6 +389,7 @@ namespace OgreMayaExporter
 	// Write submesh data to an Ogre compatible mesh
 	MStatus Submesh::createOgreSubmesh(Ogre::MeshPtr pMesh,const ParamList& params)
 	{
+		Ogre::MaterialManager* matMgr = Ogre::MaterialManager::getSingletonPtr();
 		MStatus stat;
 		// Create a new submesh
 		Ogre::SubMesh* pSubmesh;
@@ -392,8 +397,15 @@ namespace OgreMayaExporter
 			pSubmesh = pMesh->createSubMesh(m_name.asChar());
 		else
 			pSubmesh = pMesh->createSubMesh();
+        const Ogre::String materialName = m_pMaterial->name().asChar();
+        Ogre::MaterialPtr pMat = matMgr->getByName(materialName);
+        if (!pMat)
+        {
+            // Load a dummy material if necessary so it can be referenced in export.
+            pMat = matMgr->create(materialName, pMesh->getGroup());
+        }
 		// Set material
-        pSubmesh->setMaterialName(m_pMaterial->name().asChar());
+		pSubmesh->setMaterialName(materialName);
         // Set use shared geometry flag
 		pSubmesh->useSharedVertices = params.useSharedGeom;
 		// Create vertex data for current submesh
@@ -533,15 +545,15 @@ namespace OgreMayaExporter
 				{
 				case Ogre::VES_POSITION:
 					elem.baseVertexPointerToElement(pBase, &pFloat);
-					*pFloat++ = v.x;
-					*pFloat++ = v.y;
-					*pFloat++ = v.z;
+					*pFloat++ = static_cast<float>(v.x);
+					*pFloat++ = static_cast<float>(v.y);
+                    *pFloat++ = static_cast<float>(v.z);
 					break;
 				case Ogre::VES_NORMAL:
 					elem.baseVertexPointerToElement(pBase, &pFloat);
-					*pFloat++ = v.n.x;
-					*pFloat++ = v.n.y;
-					*pFloat++ = v.n.z;
+					*pFloat++ = static_cast<float>(v.n.x);
+					*pFloat++ = static_cast<float>(v.n.y);
+					*pFloat++ = static_cast<float>(v.n.z);
 					break;
 				case Ogre::VES_DIFFUSE:
 					{

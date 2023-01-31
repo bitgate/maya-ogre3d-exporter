@@ -105,13 +105,14 @@ namespace OgreMayaExporter
 		MSelectionList m_selList;
 		MTime m_curTime;
 
-		std::map<float,float> _vA_map;
-		std::map<float,float> _cam_vA_map;
-		float _lastStop;
-		float _firstStart;
-		float _lastStop_cam;
-		float _firstStart_cam;
+		std::map<double, double> _vA_map;
+		std::map<double, double> _cam_vA_map;
+		double _lastStop;
+		double _firstStart;
+		double _lastStop_cam;
+		double _firstStart_cam;
 		Ogre::Root *mr;
+		Ogre::DefaultHardwareBufferManager* bufferManager;
 	};
 
 
@@ -125,13 +126,13 @@ namespace OgreMayaExporter
 		:m_pMesh(0), m_pMaterialSet(0)
 	{
 		MGlobal::displayInfo("Translating scene to OGRE format");		
-		//mr = new Ogre::Root();
+		mr = new Ogre::Root("", "", "ogreMayaExporter.log");
+		bufferManager = new Ogre::DefaultHardwareBufferManager; // needed because we don't have a rendersystem
 	}
 
 	// Routine for creating the plug-in
 	inline void* OgreExporter::creator()
 	{
-		//Ogre::Root *r = new Ogre::Root();
 		return new OgreExporter();
 	}
 

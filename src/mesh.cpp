@@ -485,7 +485,7 @@ namespace OgreMayaExporter
 			MItDependencyNodes kDepNodeIt( MFn::kSkinClusterFilter );            
 			for( ;!kDepNodeIt.isDone() && !pSkinCluster; kDepNodeIt.next()) 
 			{            
-				MObject kObject = kDepNodeIt.item();
+				MObject kObject = kDepNodeIt.thisNode();
 				pSkinCluster = new MFnSkinCluster(kObject);
 				unsigned int uiNumGeometries = pSkinCluster->numOutputConnections();
 				for(uint uiGeometry = 0; uiGeometry < uiNumGeometries; ++uiGeometry ) 
@@ -540,11 +540,11 @@ namespace OgreMayaExporter
 			MItDependencyNodes kDepNodeIt( MFn::kBlendShape );            
 			for( ;!kDepNodeIt.isDone() && !pBlendShape; kDepNodeIt.next()) 
 			{   
-				MObject kObject = kDepNodeIt.item();
+				MObject kObject = kDepNodeIt.thisNode();
 				MItDependencyGraph itGraph(kObject,MFn::kMesh,MItDependencyGraph::kDownstream,MItDependencyGraph::kDepthFirst);
 				for (;!itGraph.isDone() && !pBlendShape; itGraph.next())
 				{
-					MFnMesh connectedMesh(itGraph.thisNode());
+					MFnMesh connectedMesh(itGraph.currentItem());
 					if (connectedMesh.fullPathName() == mesh.fullPathName())
 					{
 						pBlendShape = new BlendShape();
@@ -625,7 +625,7 @@ namespace OgreMayaExporter
 		MItGeometry iterGeom(meshDag);
 		for (int i=0; !iterGeom.isDone(); iterGeom.next(), i++)
 		{
-			MObject component = iterGeom.component();
+			MObject component = iterGeom.currentItem();
 			MFloatArray vertexWeights;
 			stat=pSkinCluster->getWeights(meshDag,component,vertexWeights,numWeights);
 			// save the normalized weights
@@ -1317,10 +1317,8 @@ namespace OgreMayaExporter
 				typedef std::vector< std::pair<float, float> > UV_PAIR;
 				std::map<Ogre::SubMesh*, UV_PAIR> uv_map;
 				if (params.preventZeroTangent) {											
-					Ogre::Mesh::SubMeshIterator smIt = pMesh->getSubMeshIterator();
-					while(smIt.hasMoreElements())
-					{									
-						Ogre::SubMesh* submesh = smIt.getNext();						
+					for(auto submesh : pMesh->getSubMeshes())
+					{
 						Ogre::VertexData* vertex_data = submesh->vertexData;		
 						const Ogre::VertexElement* tc_elem = vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_TEXTURE_COORDINATES, 0);
 						Ogre::HardwareVertexBufferSharedPtr vbuf = vertex_data->vertexBufferBinding->getBuffer(tc_elem->getSource());
@@ -1344,10 +1342,8 @@ namespace OgreMayaExporter
 					params.tangentsSplitMirrored, params.tangentsSplitRotated, params.tangentsUseParity);
 				// Reset scaled UVs		
 				if (params.preventZeroTangent) {
-					Ogre::Mesh::SubMeshIterator smIt2 = pMesh->getSubMeshIterator();							
-					while(smIt2.hasMoreElements())
-					{			
-						Ogre::SubMesh* submesh = smIt2.getNext();							
+					for (auto submesh : pMesh->getSubMeshes())
+					{
 						Ogre::VertexData* vertex_data = submesh->vertexData;		
 						const Ogre::VertexElement* tc_elem = vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_TEXTURE_COORDINATES, 0);
 						Ogre::HardwareVertexBufferSharedPtr vbuf = vertex_data->vertexBufferBinding->getBuffer(tc_elem->getSource());
@@ -1367,8 +1363,8 @@ namespace OgreMayaExporter
 		}
 		// Export the binary mesh
 		Ogre::MeshSerializer serializer;
-		serializer.exportMesh(pMesh.getPointer(), params.meshFilename.asChar(), params.targetMeshVersion);
-		pMesh.setNull();
+		serializer.exportMesh(pMesh.get(), params.meshFilename.asChar(), params.targetMeshVersion);
+		pMesh.reset();
 		return MS::kSuccess;
 	}
 

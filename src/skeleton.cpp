@@ -218,7 +218,7 @@ namespace OgreMayaExporter
 				localMatrix = bindMatrix;
 			}
 			// Get translation
-			MVector translation = ((MTransformationMatrix)localMatrix).translation(MSpace::kPostTransform);
+			MVector translation = ((MTransformationMatrix)localMatrix).getTranslation(MSpace::kPostTransform);
 			if (fabs(translation.x) < PRECISION)
 				translation.x = 0;
 			if (fabs(translation.y) < PRECISION)
@@ -259,7 +259,7 @@ namespace OgreMayaExporter
 				scale[2] = 0;
 			// Set joint info
 			newJoint.name = jointFn.partialPathName();
-			newJoint.id = m_joints.size();
+			newJoint.id = static_cast<long>(m_joints.size());
 			newJoint.parentIndex = idx;
 			newJoint.bindMatrix = bindMatrix;
 			newJoint.localMatrix = localMatrix;
@@ -270,9 +270,9 @@ namespace OgreMayaExporter
 			newJoint.axisx = axis.x;
 			newJoint.axisy = axis.y;
 			newJoint.axisz = axis.z;
-			newJoint.scalex = scale[0];
-			newJoint.scaley = scale[1];
-			newJoint.scalez = scale[2];
+			newJoint.scalex = static_cast<float>(scale[0]);
+			newJoint.scaley = static_cast<float>(scale[1]);
+			newJoint.scalez = static_cast<float>(scale[2]);
 			newJoint.jointDag = jointDag;
 			m_joints.push_back(newJoint);
 			// If root is a root joint, save its index in the roots list
@@ -460,8 +460,8 @@ namespace OgreMayaExporter
 		// test for non-uniform scale
 		testShear( j.name, relMatrix, "loadKeyframe result" );
 		// Get relative translation
-		MVector translation = ((MTransformationMatrix)localMatrix).translation(MSpace::kPostTransform) - 
-			((MTransformationMatrix)j.localMatrix).translation(MSpace::kPostTransform);
+		MVector translation = ((MTransformationMatrix)localMatrix).getTranslation(MSpace::kPostTransform) - 
+			((MTransformationMatrix)j.localMatrix).getTranslation(MSpace::kPostTransform);
 		if (fabs(translation.x) < PRECISION)
 			translation.x = 0;
 		if (fabs(translation.y) < PRECISION)
@@ -600,8 +600,8 @@ namespace OgreMayaExporter
 		pSkeleton->optimiseAllAnimations();
 		// Export skeleton binary
 		Ogre::SkeletonSerializer serializer;
-		serializer.exportSkeleton(pSkeleton.getPointer(),params.skeletonFilename.asChar());
-		pSkeleton.setNull();
+		serializer.exportSkeleton(pSkeleton.get(),params.skeletonFilename.asChar());
+		pSkeleton.reset();
 		// Skeleton successfully exported
 		return MS::kSuccess;
 	}
