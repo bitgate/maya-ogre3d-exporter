@@ -51,8 +51,9 @@
 //! \author     Marcel Reinhard <marcel.reinhardt@filmakademie.de>
 //! \author     Volker Helzle <marcel.reinhardt@filmakademie.de>
 //! \author		Bart Pelle <bart@bitgate.com>
-//! \version    1.1
-//! \date       7.12.2017 (last updated)
+//! \author     Marc Giordano <marc.giordano@surgicalscience.com>
+//! \version    1.2
+//! \date       25.7.2023 (last updated)
 //!
 
 #include "paramlist.h"
@@ -475,29 +476,37 @@ namespace OgreMayaExporter
 			{
 				MString versionName = args.asString(++i, &stat);
 
+				// The skeleton version needs to be mapped to the appropriate mesh version,
+				// so determine the correct skeleton version based on the given mesh version.
 				if (versionName == "latest")
 				{
 					targetMeshVersion = Ogre::MESH_VERSION_LATEST;
+					targetSkeletonVersion = Ogre::SKELETON_VERSION_LATEST;
 				}
 				else if (versionName == "1.10")
 				{
 					targetMeshVersion = Ogre::MESH_VERSION_1_10;
+					targetSkeletonVersion = Ogre::SKELETON_VERSION_1_8;
 				}
 				else if (versionName == "1.8")
 				{
 					targetMeshVersion = Ogre::MESH_VERSION_1_8;
+					targetSkeletonVersion = Ogre::SKELETON_VERSION_1_8;
 				}
 				else if (versionName == "1.7")
 				{
 					targetMeshVersion = Ogre::MESH_VERSION_1_7;
+					targetSkeletonVersion = Ogre::SKELETON_VERSION_1_0;
 				}
 				else if (versionName == "1.4")
 				{
 					targetMeshVersion = Ogre::MESH_VERSION_1_4;
+					targetSkeletonVersion = Ogre::SKELETON_VERSION_1_0;
 				}
 				else if (versionName == "1.0")
 				{
 					targetMeshVersion = Ogre::MESH_VERSION_1_0;
+					targetSkeletonVersion = Ogre::SKELETON_VERSION_1_0;
 				}
 				else
 				{

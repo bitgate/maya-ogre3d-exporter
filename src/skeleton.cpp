@@ -600,7 +600,7 @@ namespace OgreMayaExporter
 		pSkeleton->optimiseAllAnimations();
 		// Export skeleton binary
 		Ogre::SkeletonSerializer serializer;
-		serializer.exportSkeleton(pSkeleton.get(),params.skeletonFilename.asChar());
+		serializer.exportSkeleton(pSkeleton.get(),params.skeletonFilename.asChar(),params.targetSkeletonVersion);
 		pSkeleton.reset();
 		// Skeleton successfully exported
 		return MS::kSuccess;
